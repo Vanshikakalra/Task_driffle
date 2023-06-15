@@ -1,0 +1,27 @@
+Q1 What all can fail during the script execution and how does the script handle those failures?
+Several things could go wrong while the script is running, including:
+1. The script presupposes that the EC2 instance may be reached through SSH with the given private key. The script will end in error if the connection fails.
+2. If there are problems with git's network or with authentication, the script will fail.
+3. The script will fail at certain points if there are problems with the Docker commands (for example, the Docker daemon isn't running or there aren't enough permissions).
+The script depends on Terraform's default behaviour, which will halt execution and undo any changes done up until that point. 
+
+Q2 What kind of logs does the script print?
+1. Terraform itself prints error messages and log output to the console if there are any problems or errors during the execution. These logs can offer details on the precise processes or resources that failed.Also terraform validate and plan commands can be used to see where the error resides inside the script.
+2. Also if jenkins pipeline is successfully exectued and cinfigured it will produce logs as well in console output.
+
+Q3 When creating a load balancer, what parameters are set and why? What parameters are not set and why?
+When creating a load balancer the script sets the following parameters:
+1. name: name of the load balancer.
+2. security_groups: security group for the load balancer.
+3. availability_zones: Specifies the availability zones where the load balancer should be deployed.
+4. listener: specifying the port and protocol for both the load balancer and the instances behind it.
+5. instances: EC2 instance associated with the load balancer.
+Not all load balancer options, such as SSL certificate settings or additional listener rules, are specified by the script. For the particular use case, these settings might not be necessary or might have default values. 
+
+Assumptions:
+It is assumed that terraform is installed on the server where the script is to be run
+It is also assumes that user has an aws account with and has the access key id, secret access key as well.
+It is assumed that the aws is configured using the aws_configure command.
+It is assumed that the user already has created a .pem file from aws console and this file will be used to ssh to the EC2 instance.
+It is assumed that once the docker file and jenkinsfile is pushed the pipeline will be configured by the user manually after that.
+It is assumed that proper aws credentials and github credentials along with github token is already configured in jenkins.
